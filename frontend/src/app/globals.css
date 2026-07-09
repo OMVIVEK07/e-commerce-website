@@ -1,0 +1,144 @@
+@import "tailwindcss";
+
+:root {
+  --background: #eaeded; /* Amazon light gray background */
+  --foreground: #0f172a;
+  --card: #ffffff;
+  --card-foreground: #0f172a;
+  --primary: #FF9900; /* Amazon Orange */
+  --primary-hover: #e48800;
+  --secondary: #2874F0; /* Flipkart Blue */
+  --accent: #ffe11b; /* Flipkart Yellow */
+  --border: #ddd;
+  --muted: #565959;
+  --muted-foreground: #888;
+  --shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+  
+  --amazon-navy: #131921;
+  --amazon-navy-light: #232f3e;
+  --amazon-orange: #FF9900;
+  --amazon-orange-hover: #e48800;
+  --amazon-yellow: #f0c14b;
+  --amazon-yellow-border: #a88734;
+}
+
+.dark {
+  --background: #0f172a;
+  --foreground: #f8fafc;
+  --card: #1e293b;
+  --card-foreground: #f8fafc;
+  --primary: #ffaa33;
+  --primary-hover: #e48800;
+  --secondary: #3b82f6;
+  --accent: #fbbf24;
+  --border: #334155;
+  --muted: #94a3b8;
+  --muted-foreground: #64748b;
+  --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.3), 0 2px 4px -2px rgb(0 0 0 / 0.3);
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  overflow-x: hidden;
+}
+
+/* Custom Scrollbar for premium feel */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--background);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--muted);
+}
+
+/* E-Commerce Buttons */
+.btn-amazon-yellow {
+  background: linear-gradient(to bottom, #f7dfa5, #f0c14b);
+  border: 1px solid;
+  border-color: #a88734 #9c7e31 #846a29;
+  color: #111;
+  font-size: 13px;
+  font-weight: 500;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 1px 0 rgba(255,255,255,0.4) inset;
+  transition: all 0.2s ease;
+}
+
+.btn-amazon-yellow:hover {
+  background: linear-gradient(to bottom, #f5d78e, #eeb933);
+  border-color: #846a29 #7a6226 #685221;
+}
+
+.btn-amazon-orange {
+  background: linear-gradient(to bottom, #f8b85a, #f09411);
+  border: 1px solid;
+  border-color: #a88734 #9c7e31 #846a29;
+  color: #111;
+  font-size: 13px;
+  font-weight: 500;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 1px 0 rgba(255,255,255,0.4) inset;
+  transition: all 0.2s ease;
+}
+
+.btn-amazon-orange:hover {
+  background: linear-gradient(to bottom, #f7ad3e, #e28704);
+  border-color: #846a29 #7a6226 #685221;
+}
+
+/* Scrollbar None utility */
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Assured Checkmark badge */
+.assured-badge {
+  background-color: #2874F0;
+  color: white;
+  font-size: 10px;
+  font-weight: bold;
+  padding: 2px 6px;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.assured-badge-yellow {
+  background-color: #ffe11b;
+  color: #2874F0;
+  font-size: 9px;
+  font-weight: 900;
+  padding: 1px 4px;
+  border-radius: 2px;
+  text-transform: uppercase;
+}
+
+/* Glassmorphism utility card */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.dark .glass-panel {
+  background: rgba(30, 41, 59, 0.7);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
