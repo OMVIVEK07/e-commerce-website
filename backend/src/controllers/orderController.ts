@@ -41,10 +41,10 @@ const calculateOrderSummary = async (items: any[], couponCode?: string) => {
     }
   }
 
-  const taxedAmount = subtotal - discountAmount;
-  const gst = taxedAmount * 0.18; // 18% GST standard
-  const shippingCharges = taxedAmount > 999 ? 0 : 99; // Free shipping over INR 999
-  const grandTotal = taxedAmount + gst + shippingCharges;
+  const netPayable = Math.max(subtotal - discountAmount, 0);
+  const gst = netPayable - netPayable / 1.18; // Inclusive 18% GST (Amazon/Flipkart standard)
+  const shippingCharges = netPayable > 999 || netPayable === 0 ? 0 : 99; // Free shipping over INR 999
+  const grandTotal = netPayable + shippingCharges;
 
   return {
     subtotal: Number(subtotal.toFixed(2)),

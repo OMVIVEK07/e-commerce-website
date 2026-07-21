@@ -284,6 +284,58 @@ function ProfileDetails() {
                         ))}
                       </div>
 
+                      {/* Visual Order Progress Tracker Timeline */}
+                      {order.orderStatus !== 'cancelled' && order.orderStatus !== 'returned' ? (
+                        <div className="bg-slate-50 dark:bg-slate-950 border border-slate-150 dark:border-slate-800 p-4 rounded-2xl space-y-3">
+                          <p className="text-[10px] font-black uppercase tracking-wider text-slate-400">Order Delivery Status</p>
+                          <div className="flex items-center justify-between text-[11px] relative font-bold">
+                            {/* Track bar line */}
+                            <div className="absolute left-4 right-4 top-3 h-1 bg-slate-200 dark:bg-slate-800 -z-0">
+                              <div
+                                className="h-full bg-green-500 transition-all duration-500"
+                                style={{
+                                  width:
+                                    order.orderStatus === 'delivered'
+                                      ? '100%'
+                                      : order.orderStatus === 'shipped'
+                                      ? '66%'
+                                      : order.orderStatus === 'processed'
+                                      ? '33%'
+                                      : '10%',
+                                }}
+                              ></div>
+                            </div>
+
+                            {[
+                              { label: 'Placed', active: true },
+                              { label: 'Processing', active: order.orderStatus === 'processed' || order.orderStatus === 'shipped' || order.orderStatus === 'delivered' },
+                              { label: 'Shipped', active: order.orderStatus === 'shipped' || order.orderStatus === 'delivered' },
+                              { label: 'Delivered', active: order.orderStatus === 'delivered' },
+                            ].map((step, sIdx) => (
+                              <div key={sIdx} className="flex flex-col items-center gap-1 z-10">
+                                <div
+                                  className={`h-6 w-6 rounded-full flex items-center justify-center text-[10px] font-black ${
+                                    step.active
+                                      ? 'bg-green-500 text-white shadow-xs'
+                                      : 'bg-slate-200 dark:bg-slate-800 text-slate-400'
+                                  }`}
+                                >
+                                  {step.active ? '✓' : sIdx + 1}
+                                </div>
+                                <span className={step.active ? 'text-slate-800 dark:text-slate-100 font-extrabold' : 'text-slate-400 font-medium'}>
+                                  {step.label}
+                                </span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900 p-3.5 rounded-2xl text-xs text-red-600 font-bold flex items-center gap-2">
+                          <XCircle className="h-4 w-4" />
+                          <span>This order was {order.orderStatus} and refunded to your original payment method.</span>
+                        </div>
+                      )}
+
                       {/* Total and actions */}
                       <div className="flex flex-col sm:flex-row justify-between items-center border-t border-slate-100 dark:border-slate-800 pt-4 gap-4">
                         <span className="text-sm font-black text-slate-800 dark:text-slate-100">

@@ -48,6 +48,27 @@ export default function ProductDetailPage() {
   const [reviewComment, setReviewComment] = useState('');
   const [reviewPhoto, setReviewPhoto] = useState('');
 
+  // Pincode checker state
+  const [pincodeInput, setPincodeInput] = useState('');
+  const [pincodeResult, setPincodeResult] = useState<any>(null);
+  const [pincodeLoading, setPincodeLoading] = useState(false);
+
+  const handleCheckPincode = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!pincodeInput.trim()) return;
+    setPincodeLoading(true);
+    try {
+      const res = await api.get(`/products/pincode/check?pincode=${pincodeInput}`);
+      if (res.data.success) {
+        setPincodeResult(res.data);
+      }
+    } catch (err) {
+      // ignore
+    } finally {
+      setPincodeLoading(false);
+    }
+  };
+
   // 1. Fetch Product Detail
   const { data, isLoading, error } = useQuery({
     queryKey: ['product', productId],
@@ -211,7 +232,7 @@ export default function ProductDetailPage() {
                   activeImage === img ? 'border-orange-500 shadow-xs' : 'border-slate-200 dark:border-slate-800'
                 }`}
               >
-                <img src={img || null} alt="Product Thumbnail" className="max-h-full max-w-full object-contain" />
+                <img src={img || undefined} alt="Product Thumbnail" className="max-h-full max-w-full object-contain" />
               </button>
             ))}
           </div>
@@ -223,7 +244,7 @@ export default function ProductDetailPage() {
               onMouseLeave={handleMouseLeave}
             >
               <img
-                src={activeImage || null}
+                src={activeImage || undefined}
                 alt={product.name}
                 style={zoomStyle}
                 className="max-h-full max-w-full object-contain transition-transform duration-75"
@@ -344,6 +365,49 @@ export default function ProductDetailPage() {
                   <span className="h-2 w-2 rounded-full bg-red-650"></span>
                   <span>Currently Out of Stock</span>
                 </p>
+              )}
+            </div>
+
+            {/* Pincode Serviceability Check Widget */}
+            <div className="bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 p-3.5 rounded-lg space-y-2">
+              <div className="flex items-center gap-1.5 text-xs font-bold text-slate-700 dark:text-slate-200">
+                <Truck className="h-4 w-4 text-orange-500" />
+                <span>Delivery & Pincode Serviceability</span>
+              </div>
+              <form onSubmit={handleCheckPincode} className="flex gap-2">
+                <input
+                  type="text"
+                  maxLength={6}
+                  placeholder="Enter 6-digit Pincode (e.g. 110001)"
+                  value={pincodeInput}
+                  onChange={(e) => setPincodeInput(e.target.value)}
+                  className="flex-1 bg-white dark:bg-slate-900 border border-slate-250 dark:border-slate-800 rounded-md px-3 py-1.5 text-xs font-bold outline-hidden"
+                />
+                <button
+                  type="submit"
+                  disabled={pincodeLoading}
+                  className="bg-slate-800 hover:bg-slate-900 text-white font-bold px-3 py-1.5 rounded-md text-xs transition"
+                >
+                  {pincodeLoading ? 'Checking...' : 'Check'}
+                </button>
+              </form>
+
+              {pincodeResult && (
+                <div className="text-[11px] pt-1">
+                  {pincodeResult.isServiceable ? (
+                    <div className="space-y-0.5 text-green-600 font-bold">
+                      <p className="flex items-center gap-1">
+                        <CheckCircle className="h-3.5 w-3.5" />
+                        <span>Delivery available to {pincodeResult.city}, {pincodeResult.state}</span>
+                      </p>
+                      <p className="text-slate-600 dark:text-slate-300 font-medium">
+                        Estimated Delivery by <span className="font-bold text-slate-900 dark:text-white">{pincodeResult.deliveryDate}</span> ({pincodeResult.isExpressAvailable ? 'Express Shipping' : 'Standard Delivery'})
+                      </p>
+                    </div>
+                  ) : (
+                    <p className="text-red-500 font-bold">Sorry, delivery is currently unavailable for pincode {pincodeResult.pincode}.</p>
+                  )}
+                </div>
               )}
             </div>
           </div>

@@ -257,3 +257,40 @@ export const markReviewHelpful = async (req: any, res: Response): Promise<void> 
     res.status(500).json({ success: false, message: 'Failed to update helpful state' });
   }
 };
+
+// --- PINCODE & SEARCH SUGGESTIONS ---
+export const checkPincode = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const pincode = (req.query.pincode || req.body.pincode || '').toString();
+    const { checkPincodeServiceability } = await import('../services/pincodeService');
+    const result = checkPincodeServiceability(pincode);
+    res.status(200).json({ success: true, ...result });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Failed to validate pincode' });
+  }
+};
+
+export const getSearchSuggestions = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const q = (req.query.q || '').toString().trim();
+    if (!q || q.length < 2) {
+      res.status(200).json({ success: true, suggestions: [], categories: [] });
+      return;
+    }
+
+    const regex = new RegExp(q, 'i');
+
+    const [suggestions, categories] = await Promise.all([
+      Product.find({
+        $or: [{ name: regex }, { brand: regex }],
+      })
+        .select('name brand price discount images rating')
+        .limit(6),
+      Category.find({ name: regex }).select('name slug').limit(3),
+    ]);
+
+    res.status(200).json({ success: true, suggestions, categories });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Failed to fetch suggestions' });
+  }
+};

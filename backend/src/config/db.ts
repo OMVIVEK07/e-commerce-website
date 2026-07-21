@@ -7,6 +7,10 @@ export const connectDB = async (): Promise<void> => {
     
     await mongoose.connect(connUri);
     console.log('[Database] MongoDB Connected Successfully.');
+    
+    // Synchronize indexes to ensure sparse unique constraints (e.g. googleId)
+    const { User } = await import('../models/User');
+    await User.syncIndexes();
   } catch (error) {
     console.error('[Database] Connection Error:', error);
     process.exit(1);

@@ -307,6 +307,10 @@ export default function CartPage() {
                   )}
                 </span>
               </div>
+              <div className="flex justify-between py-2.5 text-slate-400">
+                <span className="font-semibold">Incl. GST (18%)</span>
+                <span className="font-bold text-slate-500 dark:text-slate-400">₹{cart.gst.toFixed(0)}</span>
+              </div>
               <div className="flex justify-between py-3.5 text-sm font-black border-t border-slate-100 dark:border-slate-800">
                 <span>Grand Total</span>
                 <span className="text-lg">₹{cart.grandTotal.toFixed(0)}</span>

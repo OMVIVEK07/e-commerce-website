@@ -234,9 +234,6 @@ export const verifyOtp = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
-    // Valid OTP - remove OTP records for this email
-    await Otp.deleteMany({ email });
-
     // Check user database
     let user = await User.findOne({ email });
 
@@ -262,6 +259,9 @@ export const verifyOtp = async (req: Request, res: Response): Promise<void> => {
         return;
       }
     }
+
+    // Valid OTP - remove OTP records for this email after user creation succeeds
+    await Otp.deleteMany({ email });
 
     const localToken = generateToken(user._id.toString());
 

@@ -54,10 +54,11 @@ const calculateTotals = (state: CartState) => {
     state.couponCode = null;
   }
 
-  const taxedAmount = Math.max(state.subtotal - state.discountAmount, 0);
-  state.gst = Number((taxedAmount * 0.18).toFixed(2)); // 18% GST
-  state.shippingCharges = taxedAmount > 999 || taxedAmount === 0 ? 0 : 99;
-  state.grandTotal = Number((taxedAmount + state.gst + state.shippingCharges).toFixed(2));
+  const netPayable = Math.max(state.subtotal - state.discountAmount, 0);
+  // Inclusive GST (Amazon/Flipkart standard: listed prices include tax)
+  state.gst = Number((netPayable - netPayable / 1.18).toFixed(2));
+  state.shippingCharges = netPayable > 999 || netPayable === 0 ? 0 : 99;
+  state.grandTotal = Number((netPayable + state.shippingCharges).toFixed(2));
 };
 
 const cartSlice = createSlice({

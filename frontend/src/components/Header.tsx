@@ -79,16 +79,16 @@ export default function Header() {
     if (searchQuery.trim().length > 1) {
       const fetchSuggestions = async () => {
         try {
-          const res = await api.get(`/products/list?limit=5&search=${searchQuery}`);
+          const res = await api.get(`/products/suggestions?q=${encodeURIComponent(searchQuery)}`);
           if (res.data.success) {
-            setSuggestions(res.data.products);
-            setShowSuggestions(true);
+            setSuggestions(res.data.suggestions || []);
+            setShowSuggestions((res.data.suggestions && res.data.suggestions.length > 0) || (res.data.categories && res.data.categories.length > 0));
           }
         } catch (err) {
           // ignore
         }
       };
-      const delayDebounce = setTimeout(fetchSuggestions, 300);
+      const delayDebounce = setTimeout(fetchSuggestions, 200);
       return () => clearTimeout(delayDebounce);
     } else {
       setSuggestions([]);

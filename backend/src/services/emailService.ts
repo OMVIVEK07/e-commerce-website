@@ -123,8 +123,16 @@ export const sendCustomEmail = async (options: {
       await transporter.sendMail(mailOptions);
       console.log(`[Email Service] Custom email sent to: ${options.to}`);
       return true;
-    } catch (error) {
-      console.error('[Email Service] Custom email send error:', error);
+    } catch (error: any) {
+      console.error('[Email Service] Custom email send error:', error.message);
+      if (error.code === 'EAUTH') {
+        console.warn('--------------------------------------------------------------------------------');
+        console.warn('[Email Service Warning] Gmail rejected your standard password (EAUTH 534 5.7.9).');
+        console.warn('Google requires a 16-character "App Password" to send emails via Nodemailer.');
+        console.warn('Generate one at: https://myaccount.google.com/apppasswords');
+        console.warn('Then set EMAIL_PASS="xxxx xxxx xxxx xxxx" in backend/.env');
+        console.warn('--------------------------------------------------------------------------------');
+      }
       return false;
     }
   }
