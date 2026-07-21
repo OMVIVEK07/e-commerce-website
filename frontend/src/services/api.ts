@@ -1,9 +1,21 @@
 import axios from 'axios';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+export const getBaseUrl = (): string => {
+  if (process.env.NEXT_PUBLIC_API_URL) {
+    return process.env.NEXT_PUBLIC_API_URL;
+  }
+  if (typeof window !== 'undefined') {
+    const hostname = window.location.hostname;
+    if (hostname !== 'localhost' && hostname !== '127.0.0.1') {
+      // Automatic fallback for mobile device access on local network
+      return `http://${hostname}:5000/api`;
+    }
+  }
+  return 'http://192.168.31.20:5000/api';
+};
 
 const api = axios.create({
-  baseURL: API_URL,
+  baseURL: getBaseUrl(),
   headers: {
     'Content-Type': 'application/json',
   },
@@ -12,6 +24,7 @@ const api = axios.create({
 // Request interceptor to automatically attach authorization header
 api.interceptors.request.use(
   (config) => {
+    config.baseURL = getBaseUrl();
     if (typeof window !== 'undefined') {
       const token = localStorage.getItem('token');
       if (token) {

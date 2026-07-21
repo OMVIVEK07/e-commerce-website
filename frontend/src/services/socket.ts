@@ -1,10 +1,11 @@
 import { io, Socket } from 'socket.io-client';
+import { getBaseUrl } from './api';
 
 let socket: Socket | null = null;
 
 export const getSocket = (): Socket => {
   if (!socket) {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+    const apiUrl = getBaseUrl();
     const serverUrl = apiUrl.replace(/\/api\/?$/, '');
 
     socket = io(serverUrl, {

@@ -7,7 +7,7 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../../store';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import api from '../../services/api';
+import api, { getBaseUrl } from '../../services/api';
 import { setCart } from '../../store/cartSlice';
 import {
   User,
@@ -150,7 +150,7 @@ function ProfileDetails() {
   // Invoice download trigger using dynamic backend API URL
   const handleDownloadInvoice = (orderId: string) => {
     const token = localStorage.getItem('token');
-    const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+    const baseUrl = getBaseUrl();
     window.open(`${baseUrl}/orders/invoice/${orderId}?token=${token}`);
   };
 
