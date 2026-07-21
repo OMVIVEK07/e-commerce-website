@@ -84,9 +84,12 @@ export default function LoginPage() {
       handleLoginResponse(response.data);
     } catch (err: any) {
       console.error('[Google Login Error]:', err);
+      const isNetworkErr = err.message === 'Network Error' || !err.response;
       setError(
         err.response?.data?.message ||
-          'Authentication with Google failed. Make sure only verified @gmail.com accounts are used.'
+          (isNetworkErr
+            ? 'Backend Server Unreachable: Please configure NEXT_PUBLIC_API_URL in Vercel Environment Settings to point to your deployed Render backend (e.g. https://shopcraft-backend.onrender.com/api).'
+            : err.message)
       );
     } finally {
       setLoading(false);
@@ -113,10 +116,12 @@ export default function LoginPage() {
         setError(response.data.message || 'Failed to send OTP.');
       }
     } catch (err: any) {
+      const isNetworkErr = err.message === 'Network Error' || !err.response;
       setError(
         err.response?.data?.message ||
-        err.message ||
-        'Failed to connect to backend server. Make sure NEXT_PUBLIC_API_URL points to Render backend.'
+          (isNetworkErr
+            ? 'Backend Server Unreachable: Please set NEXT_PUBLIC_API_URL in Vercel Environment Settings to your Render backend URL.'
+            : err.message)
       );
     } finally {
       setLoading(false);
