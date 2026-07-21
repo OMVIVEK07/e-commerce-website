@@ -25,7 +25,7 @@ if (isEmailConfigured()) {
 
 export const sendWelcomeEmail = async (email: string, name: string): Promise<boolean> => {
   const mailOptions = {
-    from: `"ShopCraft Support" <${process.env.EMAIL_FROM || 'support@shopcraft.com'}>`,
+    from: `"ShopCraft Support" <${process.env.EMAIL_USER || process.env.EMAIL_FROM}>`,
     to: email,
     subject: 'Welcome to ShopCraft! 🛍️',
     html: `
@@ -64,7 +64,7 @@ export const sendOrderConfirmationEmail = async (
   const invoiceId = `INV-${order._id.toString().substring(18).toUpperCase()}`;
   
   const mailOptions = {
-    from: `"ShopCraft Orders" <${process.env.EMAIL_FROM || 'orders@shopcraft.com'}>`,
+    from: `"ShopCraft Orders" <${process.env.EMAIL_USER || process.env.EMAIL_FROM}>`,
     to: email,
     subject: `Order Confirmed! #${order._id.toString().substring(18).toUpperCase()} 📦`,
     html: `
@@ -111,7 +111,7 @@ export const sendCustomEmail = async (options: {
   html?: string;
 }): Promise<boolean> => {
   const mailOptions = {
-    from: `"ShopCraft Security" <${process.env.EMAIL_FROM || 'security@shopcraft.com'}>`,
+    from: `"ShopCraft Security" <${process.env.EMAIL_USER || process.env.EMAIL_FROM}>`,
     to: options.to,
     subject: options.subject,
     text: options.text,
