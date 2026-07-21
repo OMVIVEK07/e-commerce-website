@@ -195,26 +195,30 @@ export const sendOtp = async (req: Request, res: Response): Promise<void> => {
     console.log(`[OTP Authentication] Generated OTP for ${email}: ${generatedOtp}`);
 
     // Send email using custom SMTP mailer
-    await sendCustomEmail({
-      to: email,
-      subject: 'ShopCraft Sign-In Verification Code',
-      text: `Your ShopCraft verification code is: ${generatedOtp}. This OTP is valid for 5 minutes.`,
-      html: `
-        <div style="font-family: sans-serif; padding: 20px; color: #333; max-width: 500px; margin: auto; border: 1px solid #e5e7eb; border-radius: 12px;">
-          <h2 style="color: #4f46e5; margin-bottom: 5px;">ShopCraft Security</h2>
-          <p style="font-size: 14px; color: #4b5563;">Please use the following 6-digit OTP to authenticate your secure login request:</p>
-          <div style="background: #f3f4f6; padding: 15px; border-radius: 8px; font-size: 24px; font-weight: bold; letter-spacing: 4px; text-align: center; margin: 20px 0; color: #1e1b4b;">
-            ${generatedOtp}
+    try {
+      await sendCustomEmail({
+        to: email,
+        subject: 'ShopCraft Sign-In Verification Code',
+        text: `Your ShopCraft verification code is: ${generatedOtp}. This OTP is valid for 5 minutes.`,
+        html: `
+          <div style="font-family: sans-serif; padding: 20px; color: #333; max-width: 500px; margin: auto; border: 1px solid #e5e7eb; border-radius: 12px;">
+            <h2 style="color: #4f46e5; margin-bottom: 5px;">ShopCraft Security</h2>
+            <p style="font-size: 14px; color: #4b5563;">Please use the following 6-digit OTP to authenticate your secure login request:</p>
+            <div style="background: #f3f4f6; padding: 15px; border-radius: 8px; font-size: 24px; font-weight: bold; letter-spacing: 4px; text-align: center; margin: 20px 0; color: #1e1b4b;">
+              ${generatedOtp}
+            </div>
+            <p style="font-size: 11px; color: #9ca3af;">This code is valid for 5 minutes. If you did not make this request, please secure your email account.</p>
           </div>
-          <p style="font-size: 11px; color: #9ca3af;">This code is valid for 5 minutes. If you did not make this request, please secure your email account.</p>
-        </div>
-      `,
-    });
+        `,
+      });
+    } catch (mailErr: any) {
+      console.error('[OTP Authentication] Email dispatch error:', mailErr.message);
+    }
 
     res.status(200).json({ success: true, message: 'Verification OTP sent successfully!' });
   } catch (error: any) {
     console.error('[Auth Controller] Send OTP Error:', error);
-    res.status(500).json({ success: false, message: 'Failed to send verification OTP' });
+    res.status(500).json({ success: false, message: error.message || 'Failed to send verification OTP' });
   }
 };
 
