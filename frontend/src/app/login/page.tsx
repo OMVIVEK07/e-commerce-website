@@ -100,17 +100,12 @@ export default function LoginPage() {
       setError('Please provide your email address.');
       return;
     }
-    if (!emailInput.endsWith('@gmail.com')) {
-      setError('Only verified @gmail.com accounts are allowed.');
-      return;
-    }
-
     setLoading(true);
     setError(null);
     setOtpMessage(null);
 
     try {
-      const response = await api.post('/auth/otp/send', { email: emailInput });
+      const response = await api.post('/auth/otp/send', { email: emailInput.trim() });
       if (response.data.success) {
         setOtpSent(true);
         setOtpMessage('A 6-digit verification code has been dispatched to your email.');
@@ -118,7 +113,11 @@ export default function LoginPage() {
         setError(response.data.message || 'Failed to send OTP.');
       }
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Failed to request verification code.');
+      setError(
+        err.response?.data?.message ||
+        err.message ||
+        'Failed to connect to backend server. Make sure NEXT_PUBLIC_API_URL points to Render backend.'
+      );
     } finally {
       setLoading(false);
     }
