@@ -77,9 +77,8 @@ export const googleLogin = async (req: Request, res: Response): Promise<void> =>
       return;
     }
 
-    // Enforce Gmail validation
-    if (!payload.email.endsWith('@gmail.com') && !payload.email.includes('mock_')) {
-      res.status(403).json({ success: false, message: 'Only verified Gmail accounts are allowed' });
+    if (!payload.email) {
+      res.status(400).json({ success: false, message: 'Unable to retrieve user info' });
       return;
     }
 
@@ -174,8 +173,10 @@ export const sendOtp = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
-    if (!email.endsWith('@gmail.com')) {
-      res.status(400).json({ success: false, message: 'Only verified @gmail.com accounts are allowed' });
+    // Validate proper email syntax
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      res.status(400).json({ success: false, message: 'Please enter a valid email address' });
       return;
     }
 
