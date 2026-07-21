@@ -6,12 +6,17 @@ export const getBaseUrl = (): string => {
   }
   if (typeof window !== 'undefined') {
     const hostname = window.location.hostname;
-    if (hostname !== 'localhost' && hostname !== '127.0.0.1') {
-      // Automatic fallback for mobile device access on local network
+    // If running on local network IP (e.g. 192.168.x.x)
+    if (hostname.match(/^\d+\.\d+\.\d+\.\d+$/)) {
       return `http://${hostname}:5000/api`;
     }
+    // If running on localhost
+    if (hostname === 'localhost' || hostname === '127.0.0.1') {
+      return 'http://localhost:5000/api';
+    }
   }
-  return 'http://192.168.31.20:5000/api';
+  // Default for Vercel deployment & production web access
+  return 'https://shopcraft-backend-guv5.onrender.com/api';
 };
 
 const api = axios.create({
