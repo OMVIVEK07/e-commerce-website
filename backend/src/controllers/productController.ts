@@ -5,14 +5,14 @@ import { Category } from '../models/Category';
 import { Review } from '../models/Review';
 import { getAIRecommendations } from '../services/aiService';
 
-const sampleCategories = [
+export const sampleCategories = [
   { _id: 'cat_electronics', name: 'Electronics', slug: 'electronics', image: 'https://images.unsplash.com/photo-1498049794561-7780e7231661?w=150' },
   { _id: 'cat_fashion', name: 'Fashion & Apparel', slug: 'fashion', image: 'https://images.unsplash.com/photo-1483985988355-763728e1935b?w=150' },
   { _id: 'cat_home', name: 'Home & Kitchen', slug: 'home-appliances', image: 'https://images.unsplash.com/photo-1556911220-e15b29be8c8f?w=150' },
   { _id: 'cat_books', name: 'Books & Stationery', slug: 'books', image: 'https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=150' },
 ];
 
-const sampleProducts = [
+export const sampleProducts = [
   {
     _id: '65f0a1b2c3d4e5f6a7b8c9e1',
     name: 'iPhone 15 Pro Max (256 GB, Natural Titanium)',
