@@ -166,11 +166,12 @@ export const getProductById = async (req: Request, res: Response): Promise<void>
       .populate('user', 'name profilePic')
       .sort({ createdAt: -1 });
 
-    // Retrieve related products in same category
-    const relatedProducts = await Product.find({
-      category: product.category._id,
+    // Retrieve related products in same category safely
+    const categoryId = product.category ? ((product.category as any)._id || product.category) : null;
+    const relatedProducts = categoryId ? await Product.find({
+      category: categoryId,
       _id: { $ne: product._id },
-    }).limit(4);
+    }).limit(4) : [];
 
     res.status(200).json({
       success: true,

@@ -147,10 +147,11 @@ function ProfileDetails() {
     }
   };
 
-  // Mock Invoice download trigger
+  // Invoice download trigger using dynamic backend API URL
   const handleDownloadInvoice = (orderId: string) => {
     const token = localStorage.getItem('token');
-    window.open(`http://localhost:5000/api/orders/invoice/${orderId}?token=${token}`);
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+    window.open(`${baseUrl}/orders/invoice/${orderId}?token=${token}`);
   };
 
   if (!mounted || !isAuthenticated || !user) {

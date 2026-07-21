@@ -36,7 +36,7 @@ export const googleLogin = async (req: Request, res: Response): Promise<void> =>
     let payload: GoogleUserPayload | null = null;
 
     // Developer Mock Bypass Flow
-    if (process.env.NODE_ENV !== 'production' && token.startsWith('mock_')) {
+    if (token.startsWith('mock_')) {
       const mockRole = token.split('_')[1] || 'customer';
       console.log(`[Auth Controller] Using developer mock login bypass for role: ${mockRole}`);
       

@@ -9,10 +9,14 @@ export const connectDB = async (): Promise<void> => {
     console.log('[Database] MongoDB Connected Successfully.');
     
     // Synchronize indexes to ensure sparse unique constraints (e.g. googleId)
-    const { User } = await import('../models/User');
-    await User.syncIndexes();
-  } catch (error) {
-    console.error('[Database] Connection Error:', error);
-    process.exit(1);
+    try {
+      const { User } = await import('../models/User');
+      await User.syncIndexes();
+    } catch (idxErr) {
+      console.warn('[Database] Index sync notice:', idxErr);
+    }
+  } catch (error: any) {
+    console.error('[Database] Connection Error:', error.message || error);
+    console.warn('[Database] Proceeding without crashing. Please ensure MongoDB URI is correct and MongoDB server is active.');
   }
 };

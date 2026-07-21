@@ -452,7 +452,11 @@ export const requestOrderReturn = async (req: any, res: Response): Promise<void>
 
 export const downloadInvoicePDF = async (req: any, res: Response): Promise<void> => {
   try {
-    const order = await Order.findOne({ _id: req.params.orderId, customer: req.user.id }).populate('items.product');
+    const query = req.user.role === 'admin'
+      ? { _id: req.params.orderId }
+      : { _id: req.params.orderId, customer: req.user.id };
+
+    const order = await Order.findOne(query).populate('items.product');
     if (!order) {
       res.status(404).json({ success: false, message: 'Order not found' });
       return;

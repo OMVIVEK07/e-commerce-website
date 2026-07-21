@@ -40,8 +40,8 @@ export const addToCart = async (req: any, res: Response): Promise<void> => {
 
     // Check if item with exact same variant is already in cart
     const itemIndex = cart.items.findIndex(
-      (item) =>
-        item.product.toString() === productId &&
+      (item: any) =>
+        (item.product._id ? item.product._id.toString() : item.product.toString()) === productId &&
         (!variant ||
           (item.variant?.color === variant.color &&
             item.variant?.size === variant.size &&
