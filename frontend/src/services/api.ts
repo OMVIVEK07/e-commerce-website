@@ -22,9 +22,18 @@ export const getBaseUrl = (): string => {
   if (typeof window !== 'undefined' && window.location.protocol === 'https:' && url.startsWith('http:')) {
     url = url.replace(/^http:/, 'https:');
   }
-  // Ensure /api suffix
-  if (!url.endsWith('/api') && !url.endsWith('/api/')) {
-    url = url.replace(/\/+$/, '') + '/api';
+
+  // Remove trailing slashes
+  url = url.replace(/\/+$/, '');
+
+  // Fix duplicate /api/api
+  if (url.endsWith('/api/api')) {
+    url = url.replace(/\/api\/api$/, '/api');
+  }
+
+  // Ensure single /api suffix
+  if (!url.endsWith('/api')) {
+    url = url + '/api';
   }
 
   return url;
