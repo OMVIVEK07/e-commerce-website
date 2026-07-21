@@ -1,42 +1,19 @@
 import axios from 'axios';
 
 export const getBaseUrl = (): string => {
-  let url = process.env.NEXT_PUBLIC_API_URL;
-  if (!url) {
-    if (typeof window !== 'undefined') {
-      const hostname = window.location.hostname;
-      // If running on local network IP (e.g. 192.168.x.x)
-      if (hostname.match(/^\d+\.\d+\.\d+\.\d+$/)) {
-        return `http://${hostname}:5000/api`;
-      }
-      // If running on localhost
-      if (hostname === 'localhost' || hostname === '127.0.0.1') {
-        return 'http://localhost:5000/api';
-      }
+  if (typeof window !== 'undefined') {
+    const hostname = window.location.hostname;
+    // Local dev environment
+    if (hostname === 'localhost' || hostname === '127.0.0.1') {
+      return 'http://localhost:5000/api';
     }
-    url = 'https://shopcraft-backend-guv5.onrender.com/api';
+    if (hostname.match(/^\d+\.\d+\.\d+\.\d+$/)) {
+      return `http://${hostname}:5000/api`;
+    }
+    // On Vercel or production web browser, use Vercel Edge Proxy route /api
+    return '/api';
   }
-
-  url = url.trim();
-  // Force HTTPS on secure pages to eliminate Mixed Content browser blocks
-  if (typeof window !== 'undefined' && window.location.protocol === 'https:' && url.startsWith('http:')) {
-    url = url.replace(/^http:/, 'https:');
-  }
-
-  // Remove trailing slashes
-  url = url.replace(/\/+$/, '');
-
-  // Fix duplicate /api/api
-  if (url.endsWith('/api/api')) {
-    url = url.replace(/\/api\/api$/, '/api');
-  }
-
-  // Ensure single /api suffix
-  if (!url.endsWith('/api')) {
-    url = url + '/api';
-  }
-
-  return url;
+  return process.env.NEXT_PUBLIC_API_URL || 'https://shopcraft-backend-guv5.onrender.com/api';
 };
 
 const api = axios.create({
